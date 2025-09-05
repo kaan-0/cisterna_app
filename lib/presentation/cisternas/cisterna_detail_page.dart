@@ -1,7 +1,10 @@
 // cisterna_detail_page.dart
+import 'package:cisterna_app/logic/cisternas_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:liquid_progress_indicator_v2/liquid_progress_indicator.dart';
 import '../../data/models/cisterna.dart';
+
 
 
 class CisternaDetailPage extends StatefulWidget {
@@ -15,12 +18,61 @@ class CisternaDetailPage extends StatefulWidget {
 
 class _CisternaDetailPageState extends State<CisternaDetailPage> {
 
-   double nivelPorcentaje = 0.25; // 72% traer de api el nivel de llenado y calcular porcentaje
-   double nivelLlenado = 1.03;//nivel viene en metros
+    @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadUltimoDato();
+    });
+  }
 
+  void _loadUltimoDato() {
+    final provider = Provider.of<CisternasProvider>(context, listen: false);
+    provider.loadUltimoDato(widget.cisterna.id);
+    provider.loadAltura(widget.cisterna.id);
+    
+  }
+  
+  // void _loadAltura() {
+  //   final provider2 = Provider.of<CisternasProvider>(context, listen: false);
+  //   provider2.loadAltura(widget.cisterna.id);
+    
+  // }
+
+   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    
+  }
+
+  double _calcularPorcentaje(double nivelMetros, double alturaMaxima) {
+
+    alturaMaxima=alturaMaxima/100;
+
+    // print(nivelMetros);
+    // print(alturaMaxima);
+    // print((nivelMetros / alturaMaxima).clamp(0.0, 1.0));
+
+     return (nivelMetros / alturaMaxima).clamp(0.0, 1.0);
+     
+  }
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<CisternasProvider>(context);
+    // final provider2 = Provider.of<CisternasProvider>(context);
+
+    final ultimoDato = provider.ultimoDato;
+    final altura = provider.datoAltura;
+    print(altura);
+
+    final double nivelLlenado = ultimoDato?.nivel ?? 0.0;
+
+    final double alturaMaxima = (altura?.altura ?? 0).toDouble();
+
+    final double nivelPorcentaje = _calcularPorcentaje(nivelLlenado,alturaMaxima);
+
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -28,8 +80,9 @@ class _CisternaDetailPageState extends State<CisternaDetailPage> {
           ),
         actions: [
           IconButton(
-            onPressed: null, 
-            icon: Icon(Icons.logout),
+           onPressed: _loadUltimoDato,
+            icon: const Icon(Icons.refresh),
+            tooltip: 'Actualizar',
             ),
         ],
         

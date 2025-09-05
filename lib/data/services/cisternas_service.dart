@@ -1,4 +1,6 @@
 // cisternas_service.dart
+import 'package:cisterna_app/data/models/cisterna_detail.dart';
+import 'package:cisterna_app/data/models/cisterna_dimensiones.dart';
 import 'package:dio/dio.dart';
 import '../models/cisterna.dart';
 import 'api_client.dart';
@@ -7,8 +9,7 @@ class CisternasService {
   Future<List<Cisterna>> getCisternas() async {
     try {
       final response = await ApiClient.dio.get("/cisternas");
-      //final  dimensiones = await ApiClient.dio.get("/dimensiones/");
-
+      
       if (response.statusCode == 200) {
         
         if (response.data is Map && response.data.containsKey('cisternas')) {
@@ -41,5 +42,28 @@ class CisternasService {
     }
   }
 
-  //getDimensiones?
+  //Ultimo dato
+  Future<CisternaDetail> getUltimoDato(int id) async {
+
+    final response = await ApiClient.dio.get("/cisterna/$id/ultimo");
+
+    final data = CisternaDetail.fromJson(response.data);
+
+    return data;
+
+  }
+
+  //Dimensiones
+
+Future<CisternaDimensiones> getCisternaDimension(int id) async {
+
+final response = await ApiClient.dio.get("/dimensiones/$id");
+
+final data = CisternaDimensiones.fromJson(response.data[0]);
+
+return data;
+
+}
+
+
 }
