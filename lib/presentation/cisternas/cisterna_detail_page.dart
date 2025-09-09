@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:liquid_progress_indicator_v2/liquid_progress_indicator.dart';
 import '../../data/models/cisterna.dart';
+import 'package:intl/intl.dart';
 
 
 
@@ -64,13 +65,23 @@ class _CisternaDetailPageState extends State<CisternaDetailPage> {
 
     final ultimoDato = provider.ultimoDato;
     final altura = provider.datoAltura;
-    print(altura);
+    final fecha = provider.ultimoDato!.fecha;
+    
+    //print(ultimoDato?.fecha);
 
-    final double nivelLlenado = ultimoDato?.nivel ?? 0.0;
+    final double nivelTexto = (ultimoDato!.nivel * 100).roundToDouble();
+
+    final double nivelLlenado = ultimoDato.nivel;
 
     final double alturaMaxima = (altura?.altura ?? 0).toDouble();
 
     final double nivelPorcentaje = _calcularPorcentaje(nivelLlenado,alturaMaxima);
+
+    var formato = DateFormat('dd-MM-yyyy HH:mm');
+
+    final fechaFormateada = formato.format(fecha);
+
+    
 
 
     return Scaffold(
@@ -92,21 +103,23 @@ class _CisternaDetailPageState extends State<CisternaDetailPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              widget.cisterna.nombre,
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              widget.cisterna.descripcion ?? "Sin descripción",
-              style: const TextStyle(fontSize: 16, color: Colors.grey),
-            ),
+            
+            // Text(
+            //   widget.cisterna.nombre,
+            //   style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            // ),
+            // const SizedBox(height: 8),
+            // Text(
+            //   widget.cisterna.descripcion ?? "Sin descripción",
+            //   style: const TextStyle(fontSize: 16, color: Colors.grey),
+            // ),
             
             const SizedBox(height: 20),
             _buildDetailCard("Información de la Cisterna", [
                _buildDetailItem("Nombre", widget.cisterna.nombre),
                _buildDetailItem("Descripción", widget.cisterna.descripcion ?? "N/A"),
-               _buildDetailItem("Nivel en metros", nivelLlenado.toString()),
+               _buildDetailItem("Nivel", "$nivelTexto cms"),
+               _buildDetailItem("Leído el",fechaFormateada ),
               Center(
                 child: SizedBox(
                 height: 220,
