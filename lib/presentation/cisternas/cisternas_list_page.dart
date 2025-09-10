@@ -1,5 +1,7 @@
 
 import 'package:cisterna_app/data/models/cisterna.dart';
+import 'package:cisterna_app/logic/auth_provider.dart';
+import 'package:cisterna_app/presentation/auth/login_page.dart';
 import 'package:cisterna_app/presentation/cisternas/cisterna_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -63,9 +65,14 @@ class _CisternasListPageState extends State<CisternasListPage> {
            ),
            IconButton(
              icon: const Icon(Icons.logout),
-             onPressed: null,
-             tooltip: 'Cerrar sesión',
-             color: Colors.white,
+             onPressed: (){
+              final authProvider = Provider.of<AuthProvider>(context, listen: false);
+              authProvider.logout();
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context)=> LoginPage()), 
+                (Route<dynamic> route)=> false,
+                );
+             },
            ),
         ],
       ),

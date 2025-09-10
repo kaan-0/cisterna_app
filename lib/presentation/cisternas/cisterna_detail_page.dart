@@ -1,5 +1,7 @@
 // cisterna_detail_page.dart
+import 'package:cisterna_app/logic/auth_provider.dart';
 import 'package:cisterna_app/logic/cisternas_provider.dart';
+import 'package:cisterna_app/presentation/auth/login_page.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:liquid_progress_indicator_v2/liquid_progress_indicator.dart';
@@ -19,13 +21,54 @@ class CisternaDetailPage extends StatefulWidget {
 
 class _CisternaDetailPageState extends State<CisternaDetailPage> {
 
+ bool _isLoading = true;
+//   String? _errorMessage;
+
+
+
     @override
   void initState() {
     super.initState();
+    Future.delayed(const Duration(seconds: 2), () {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    });
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadUltimoDato();
     });
   }
+
+  // Future<void> _loadUltimoDato() async {
+
+  //   final provider = Provider.of<CisternasProvider>(context, listen: false);
+
+  //    setState(() {
+  //     _isLoading = true;
+  //     _errorMessage = null;
+  //   });
+
+  //   try{
+  //     await provider.loadUltimoDato(widget.cisterna.id);
+  //     await provider.loadAltura(widget.cisterna.id);
+  //   }catch (e){
+  //     setState(() {
+  //       _errorMessage = e.toString();
+  //     });
+  //   }finally {
+  //     setState(() {
+  //       _isLoading = false;
+  //     });
+  //   }
+
+  //   //provider.loadUltimoDato(widget.cisterna.id);
+  //   //provider.loadAltura(widget.cisterna.id);
+    
+  // }
+
 
   void _loadUltimoDato() {
     final provider = Provider.of<CisternasProvider>(context, listen: false);
@@ -33,12 +76,8 @@ class _CisternaDetailPageState extends State<CisternaDetailPage> {
     provider.loadAltura(widget.cisterna.id);
     
   }
-  
-  // void _loadAltura() {
-  //   final provider2 = Provider.of<CisternasProvider>(context, listen: false);
-  //   provider2.loadAltura(widget.cisterna.id);
-    
-  // }
+
+
 
    @override
   void didChangeDependencies() {
@@ -65,13 +104,42 @@ class _CisternaDetailPageState extends State<CisternaDetailPage> {
 
     final ultimoDato = provider.ultimoDato;
     final altura = provider.datoAltura;
-    final fecha = provider.ultimoDato!.fecha;
+    final fecha = provider.ultimoDato?.fecha;
+
+    if (ultimoDato == null || _isLoading) {
+      return Scaffold( // Usar Scaffold para fondo blanco
+        backgroundColor: Colors.white, // Fondo blanco
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // CircularProgressIndicator personalizado
+              CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.blue), // Color azul
+                strokeWidth: 4.0, // Grosor de la línea
+              ),
+              const SizedBox(height: 20),
+              // Texto personalizado
+              const Text(
+                'Cargando datos...',
+                style: TextStyle(
+                  color: Colors.black87, // Texto negro
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
     
     //print(ultimoDato?.fecha);
 
-    final double nivelTexto = (ultimoDato!.nivel * 100).roundToDouble();
+    //final double nivelTexto = (ultimoDato!.nivel * 100).roundToDouble();
+    final double nivelTexto = ((ultimoDato?.nivel ?? 0) * 100).roundToDouble();
 
-    final double nivelLlenado = ultimoDato.nivel;
+    final double nivelLlenado = ultimoDato?.nivel ?? 0;
 
     final double alturaMaxima = (altura?.altura ?? 0).toDouble();
 
@@ -79,9 +147,10 @@ class _CisternaDetailPageState extends State<CisternaDetailPage> {
 
     var formato = DateFormat('dd-MM-yyyy HH:mm');
 
-    final fechaFormateada = formato.format(fecha);
+    final fechaFormateada = formato.format(fecha!);
 
     
+
 
 
     return Scaffold(
@@ -95,6 +164,17 @@ class _CisternaDetailPageState extends State<CisternaDetailPage> {
             icon: const Icon(Icons.refresh),
             tooltip: 'Actualizar',
             ),
+           IconButton(
+             icon: const Icon(Icons.logout),
+             onPressed: () {
+              final authProvider = Provider.of<AuthProvider>(context, listen: false);
+              authProvider.logout();
+              Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => LoginPage()),
+              (Route<dynamic> route) => false,
+              );
+            },
+          ),
         ],
         
       ),
@@ -104,22 +184,13 @@ class _CisternaDetailPageState extends State<CisternaDetailPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             
-            // Text(
-            //   widget.cisterna.nombre,
-            //   style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            // ),
-            // const SizedBox(height: 8),
-            // Text(
-            //   widget.cisterna.descripcion ?? "Sin descripción",
-            //   style: const TextStyle(fontSize: 16, color: Colors.grey),
-            // ),
-            
             const SizedBox(height: 20),
             _buildDetailCard("Información de la Cisterna", [
                _buildDetailItem("Nombre", widget.cisterna.nombre),
                _buildDetailItem("Descripción", widget.cisterna.descripcion ?? "N/A"),
                _buildDetailItem("Nivel", "$nivelTexto cms"),
                _buildDetailItem("Leído el",fechaFormateada ),
+               
               Center(
                 child: SizedBox(
                 height: 220,
@@ -192,5 +263,10 @@ class _CisternaDetailPageState extends State<CisternaDetailPage> {
       ),
     );
   }
+
+
+
 }
+
+
 

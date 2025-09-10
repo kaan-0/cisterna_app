@@ -67,39 +67,45 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Iniciar Sesión"),
-        //centerTitle: true,
-        //automaticallyImplyLeading: false, 
+        centerTitle: true,
+        automaticallyImplyLeading: false, 
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Form(
           key: _formKey,
           child: Column(
-            //crossAxisAlignment: CrossAxisAlignment.stretch,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // Logo o imagen
               const SizedBox(height: 40),
-              // Image.network(
-              // 'https://ejemplo.com/tu-imagen.jpg', 
-              //   width: 100,
-              //   height: 100,
-              //   fit: BoxFit.cover,
-              //     ),
+              Image.asset(
+                'assets/images/login-1.jpg',
+                 width: 200,
+                 height: 200,
+                 fit: BoxFit.cover,
+                ),
+              //  Image.network(
+              //  'https://unsplash.com/es/fotos/gotas-de-agua-sobre-superficie-azul-AANCLsb0sU0', 
+              //    width: 100,
+              //    height: 100,
+              //    fit: BoxFit.cover,
+              //      ),
               //FlutterLogo(size: 100),
               const SizedBox(height: 30),
               const Text(
                 "Bienvenido",
                 style: TextStyle(
-                  //fontSize: 24,
-                  //fontWeight: FontWeight.bold,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
                 ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 10),
               const Text(
                 "Ingresa tus credenciales para continuar",
-                //textAlign: TextAlign.center,
-                //style: TextStyle(color: Colors.grey),
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.grey),
               ),
               const SizedBox(height: 40),
 
@@ -108,10 +114,10 @@ class _LoginPageState extends State<LoginPage> {
                 controller: _emailController,
                 decoration: const InputDecoration(
                   labelText: "Email",
-                  //prefixIcon: Icon(Icons.email),
+                  prefixIcon: Icon(Icons.email),
                   border: OutlineInputBorder(),
                 ),
-                //keyboardType: TextInputType.emailAddress,
+                keyboardType: TextInputType.emailAddress,
                 textInputAction: TextInputAction.next,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -130,8 +136,8 @@ class _LoginPageState extends State<LoginPage> {
                 controller: _passwordController,
                 decoration: InputDecoration(
                   labelText: "Contraseña",
-                  //prefixIcon: const Icon(Icons.lock),
-                  //border: const OutlineInputBorder(),
+                  prefixIcon: const Icon(Icons.lock),
+                  border: const OutlineInputBorder(),
                   suffixIcon: IconButton(
                     icon: Icon(
                       _obscurePassword ? Icons.visibility : Icons.visibility_off,
@@ -141,7 +147,7 @@ class _LoginPageState extends State<LoginPage> {
                     },
                   ),
                 ),
-                //obscureText: _obscurePassword,
+                obscureText: _obscurePassword,
                 textInputAction: TextInputAction.done,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -160,9 +166,9 @@ class _LoginPageState extends State<LoginPage> {
               ElevatedButton(
                 onPressed: _isLoading ? null : () => _login(context),
                 style: ElevatedButton.styleFrom(
-                  //padding: const EdgeInsets.symmetric(vertical: 16),
-                  //backgroundColor: Colors.blue[700],
-                  //foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  backgroundColor: Colors.blue[700],
+                  foregroundColor: Colors.white,
                 ),
                 child: _isLoading
                     ? const SizedBox(
@@ -170,7 +176,7 @@ class _LoginPageState extends State<LoginPage> {
                         height: 20,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          //valueColor: AlwaysStoppedAnimation(Colors.white),
+                          valueColor: AlwaysStoppedAnimation(Colors.white),
                         ),
                       )
                     : const Text(
@@ -181,19 +187,20 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 20),
 
               // Texto de ayuda
-              // TextButton(
-              //   onPressed: _isLoading
-              //       ? null
-              //       : () {
-              //           // Aquí puedes agregar funcionalidad de "Olvidé mi contraseña"
-              //           ScaffoldMessenger.of(context).showSnackBar(
-              //             const SnackBar(
-              //               content: Text("Funcionalidad en desarrollo"),
-              //             ),
-              //           );
-              //         },
-              //   child: const Text("¿Olvidaste tu contraseña?"),
-              // ),
+              TextButton(
+                onPressed: _isLoading
+                    ? null
+                    : () {
+                        
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("Derechos reservados"),
+                            duration: Duration(seconds: 5),
+                          ),
+                        );
+                      },
+                child: const Text("Powered by C&D Technología 2025"),
+              ),
             ],
           ),
         ),

@@ -70,7 +70,7 @@ Future<void> loadUltimoDato(int cisternaId) async {
   Future<void> loadAltura(int cisternaId) async{
 
     try {
-      _datoAltura = null;
+      _datoAltura;
       notifyListeners();
 
       _datoAltura = await _service.getCisternaDimension(cisternaId);
