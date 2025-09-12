@@ -60,7 +60,7 @@ Future<void> loadUltimoDato(int cisternaId) async {
 
     } catch (e) {
       _errorDetail = e.toString();
-      print('Error cargando último dato: $e');
+      //print('Error cargando último dato: $e');
     } finally {
       _isLoadingDetail = false;
       notifyListeners();
@@ -77,7 +77,7 @@ Future<void> loadUltimoDato(int cisternaId) async {
 
     } catch (e) {
       
-      print('Error cargando dato de altura: $e');
+      //print('Error cargando dato de altura: $e');
     } finally {
       
       notifyListeners();
